@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>afisarea unei functii</title>
+        <style> body {margin: 0; overflow: hidden} </style> 
+    </head>
+    <body>
+        <canvas class="myCanvas"></canvas>
+        <script>
+            const canvas = document.querySelector('.myCanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            pixPerUnit = 100;
+            pixShiftX = 0;
+            pixShiftY = 0;
+            draw();
+            document.addEventListener('keydown', event => {
+                if (event.code == 'KeyW'    ) {pixPerUnit = pixPerUnit * 1.1;}
+                if (event.code == 'KeyS'  ) {pixPerUnit = pixPerUnit * 0.9;}
+                if (event.code == 'ArrowLeft' ) {pixShiftX  = pixShiftX  + 10 ;}
+                if (event.code == 'ArrowRight') {pixShiftX  = pixShiftX  - 10 ;}
+                if (event.code == 'ArrowUp'   ) {pixShiftY  = pixShiftY  + 10 ;}
+                if (event.code == 'ArrowDown' ) {pixShiftY  = pixShiftY  - 10 ;}
+                draw();
+            });
+            function draw() {
+                pixMinX = (-canvas.width  / 2 - pixShiftX);
+                pixMaxX = ( canvas.width  / 2 - pixShiftX);
+                pixMinY = (-canvas.height / 2 - pixShiftY);
+                pixMaxY = ( canvas.height / 2 - pixShiftY);
+                // culoare fundal 
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Axe
+                ctx.strokeStyle = 'white';
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height/2 + pixShiftY);
+                ctx.lineTo(canvas.width, canvas.height/2 + pixShiftY);
+                ctx.moveTo(canvas.width/2 + pixShiftX, 0);
+                ctx.lineTo(canvas.width/2 + pixShiftX, canvas.height);
+                ctx.stroke();
+                // Coordonate
+                ctx.fillStyle = 'white';
+                ctx.font = '12px arial';
+                ctx.fillText(pixMinX/pixPerUnit, 10, canvas.height/2 + pixShiftY - 10);
+                ctx.fillText(pixMaxX/pixPerUnit, canvas.width - 60, canvas.height/2 + pixShiftY - 10);
+                ctx.fillText(-pixMinY/pixPerUnit, canvas.width/2 + pixShiftX + 5, 20);
+                ctx.fillText(-pixMaxY/pixPerUnit, canvas.width/2 + pixShiftX + 5, canvas.height - 10);
+                // Grafic
+                ctx.strokeStyle = 'yellow';
+                ctx.beginPath();
+                ctx.moveTo(0, -f(pixMinX/pixPerUnit)*pixPerUnit - pixMinY);
+                for (let x = pixMinX + 1; x <= pixMaxX; x++) {
+                    ctx.lineTo(x - pixMinX, -f(x/pixPerUnit)*pixPerUnit - pixMinY);
+                }
+                ctx.stroke();
+            }
+            function f(x) {
+                return Math.tan(3*x); // ex: Math.pow(x,2) ridicare la putere , Math.sqrt(x)-6 radical , Math.tan(x)
+            }
+        </script>
+    </body>
+</html>
